@@ -1,0 +1,24 @@
+Certificate Processing:
+- Read/scan certificates
+- Extract key information
+- Validate authenticity
+- Trigger on-chain actions
+
+Verification States:
+- Initial scan
+- Data validation
+- Contract interaction
+- Verification status updates
+
+Required Components:
+
+Smart Contract Integration:
+- Connect to deployed contract
+- Handle minting/verification
+- Manage state changes
+
+AI Processing:
+- OCR capability
+- Format validation
+- Data extraction
+- Fraud detection

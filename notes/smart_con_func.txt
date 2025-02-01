@@ -1,0 +1,57 @@
+The contract has all the core functionality for a university certificate SBT system. Let's verify we have everything essential:
+We Have:
+
+Certificate Management
+
+Minting (both digital and scanned)
+Revocation
+Verification
+
+
+Access Control
+
+University role
+Verifier role
+Admin role
+
+
+Soulbound Behavior
+
+Transfer restrictions
+Locking mechanism
+
+
+View Functions
+
+getCertificate
+getStudentCertificates
+
+
+
+Potential Additions:
+
+Batch Operations
+
+solidityCopyfunction batchMintCertificates(
+    address[] memory students,
+    string[] memory ipfsHashes
+) external onlyRole(UNIVERSITY_ROLE)
+
+URI Handling
+
+solidityCopyfunction tokenURI(uint256 tokenId) 
+    public 
+    view 
+    virtual 
+    override 
+    returns (string memory)
+
+University Management
+
+solidityCopyfunction getUniversityCertificates(address university) 
+    external 
+    view 
+    returns (uint256[] memory)
+
+
+    deployed contract address: 0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789
