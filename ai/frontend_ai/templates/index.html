@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certificate Verifier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 Certificate Verifier</h1>
+        <div class="status-badge">
+            ✅ Connected to Base Sepolia
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="upload-card">
+            <h2>Upload Certificate</h2>
+            <form id="upload-form">
+                <div class="upload-area" id="drop-zone">
+                    <img src="data:image/svg+xml,<svg>...</svg>" alt="upload">
+                    <h3>Drop your certificate here</h3>
+                    <p id="file-name">No file chosen</p>
+                </div>
+                <input type="file" id="certificate" name="certificate" accept=".pdf,.jpg,.jpeg,.png" hidden>
+                <input type="text" class="wallet-input" id="studentAddress" name="studentAddress" 
+                       placeholder="Enter student wallet address (0x...)" value="{{ contract_address }}">
+                <button type="submit" class="verify-button" id="verify-button">
+                    Verify & Mint Certificate
+                </button>
+            </form>
+            <div id="loading">Verifying certificate...</div>
+            <div id="result"></div>
+        </div>
+
+        <div class="history-card">
+            <h2>Verification History</h2>
+            <table class="transaction-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Certificate Hash</th>
+                        <th>Student Wallet</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-history"></tbody>
+            </table>
+        </div>
+
+        <div class="chat-card">
+            <h2>AI Certificate Assistant</h2>
+            <div id="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Ask about certificate verification...">
+                <button onclick="sendMessage()" class="chat-button">Send</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

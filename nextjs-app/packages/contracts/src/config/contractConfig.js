@@ -1,0 +1,2 @@
+export const CONTRACT_ADDRESS = "0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789";
+export const NETWORK_ID = "base-sepolia";
