@@ -25,10 +25,10 @@ cdp = CdpAgentkitWrapper()
 cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(cdp)
 tools = cdp_toolkit.get_tools()
 
-CONTRACT_ADDRESS = "0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789"
+CONTRACT_ADDRESS = "0x51aFC34058734d8a83ab286F9668114663Ba0541" #0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789
 
 # Certificate verification functions
-def verify_and_mint_certificate(student_address: str, ipfs_hash: str) -> str:
+def mint_certificate(student_address: str, ipfs_hash: str) -> str:
     try:
         contract = cdp.get_contract(CONTRACT_ADDRESS, "UniversityCertificate")
         signer = cdp.get_signer()
@@ -38,36 +38,20 @@ def verify_and_mint_certificate(student_address: str, ipfs_hash: str) -> str:
     except Exception as e:
         return f"❌ Error: {str(e)}"
 
-def verify_scanned_certificate(student_address: str, ipfs_hash: str, scan_hash: str) -> str:
-    try:
-        contract = cdp.get_contract(CONTRACT_ADDRESS, "UniversityCertificate")
-        signer = cdp.get_signer()
-        contract = contract.connect(signer)
-        tx = contract.mintScannedCertificate(student_address, ipfs_hash, scan_hash)
-        return f"✅ Scanned certificate minted. Transaction: {tx.hash}"
-    except Exception as e:
-        return f"❌ Error: {str(e)}"
-
 # Register tools
-tools.extend([
+tools.append(
     Tool.from_function(
         name="mint_certificate",
-        description="Mint a new certificate for a student (university only)",
-        func=verify_and_mint_certificate
-    ),
-    Tool.from_function(
-        name="mint_scanned_certificate",
-        description="Mint a scanned certificate after verification",
-        func=verify_scanned_certificate
+        description="Mint a new certificate for a student",
+        func=mint_certificate
     )
-])
+)
 
 # Create the agent
 agent_executor = create_react_agent(
     llm,
     tools=tools,
-    state_modifier="""You are a certificate verification agent that validates university certificates 
-    and prepares them for blockchain storage. Verify authenticity before minting."""
+    state_modifier="You are a certificate minting agent that converts university certificates to SBTs."
 )
 
 def process_certificate(file_path, student_address: str):
@@ -76,30 +60,26 @@ def process_certificate(file_path, student_address: str):
         with open(file_path, 'rb') as f:
             content = f.read()
         certificate_hash = hashlib.sha256(content).hexdigest()
-        scan_hash = hashlib.sha256(f"scan_{content}".encode()).hexdigest()
 
-        verification_prompt = f"""
-        Analyze this certificate file and:
-        1. Verify if it's a valid university certificate
-        2. Extract: university name, degree type, date
-        3. Check for any inconsistencies
-        4. If valid, mint it as an SBT for student address: {student_address}
-        Certificate hash: {certificate_hash}
-        Scan hash: {scan_hash}
+        minting_prompt = f"""
+        Mint this certificate as an SBT for student address: {student_address}
+        Use the SHA-256 hash of the certificate as the IPFS hash: {certificate_hash}
+        Call the mint_certificate function with the following parameters:
+        - student_address: {student_address}
+        - ipfs_hash: {certificate_hash}
         """
 
-        verification_result = []
+        minting_result = []
         for chunk in agent_executor.stream(
-            {"messages": [HumanMessage(content=verification_prompt)]},
-            {"configurable": {"thread_id": "certificate_verification"}}
+            {"messages": [HumanMessage(content=minting_prompt)]},
+            {"configurable": {"thread_id": "certificate_minting"}}
         ):
             if "agent" in chunk:
-                verification_result.append(chunk["agent"]["messages"][0].content)
+                minting_result.append(chunk["agent"]["messages"][0].content)
 
         return {
             'certificateHash': certificate_hash,
-            'scanHash': scan_hash,
-            'verificationResult': verification_result,
+            'mintingResult': minting_result,
             'studentAddress': student_address
         }
 

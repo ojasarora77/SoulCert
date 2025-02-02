@@ -156,6 +156,7 @@ function CertificateList({ account, contract }) {
   const [certificates, setCertificates] = useState([]);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [uploadFile, setUploadFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCertificateUpload = async (e) => {
     e.preventDefault();
@@ -189,7 +190,7 @@ function CertificateList({ account, contract }) {
     }
   };
 
-return (
+  return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h2>Your Certificates</h2>
@@ -211,8 +212,8 @@ return (
               Upload your certificate to convert it to an SBT
             </p>
           </div>
-          <Button type="submit" disabled={!uploadFile}>
-            Convert to SBT
+          <Button type="submit" disabled={!uploadFile || isLoading}>
+            {isLoading ? 'Processing...' : 'Convert to SBT'}
           </Button>
         </UploadForm>
       )}
