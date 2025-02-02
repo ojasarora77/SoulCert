@@ -1,4 +1,4 @@
-# decen_upload
+# SoulCert
 # A decentralized platform for issuing and verifying university certificates using Soulbound Tokens (SBTs) and AI verification.
 ## Overview
 Traditional certificate systems face challenges with verification, forgery, and permanent record-keeping. This project offers a decentralized solution where academic credentials are stored as Soulbound Tokens - non-transferable NFTs that are permanently bound to a student's blockchain address.
