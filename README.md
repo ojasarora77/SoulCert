@@ -1,4 +1,4 @@
-# SoulCert
+# decen_upload
 # A decentralized platform for issuing and verifying university certificates using Soulbound Tokens (SBTs) and AI verification.
 ## Overview
 Traditional certificate systems face challenges with verification, forgery, and permanent record-keeping. This project offers a decentralized solution where academic credentials are stored as Soulbound Tokens - non-transferable NFTs that are permanently bound to a student's blockchain address.
@@ -34,3 +34,31 @@ Solidity
 Node.js
 TypeScript
 React.js
+
+## How to run:
+Prerequisites
+
+Python 3.11+
+Node.js 18+
+MetaMask wallet
+Base Sepolia testnet configured in MetaMask
+
+Environment Setup
+
+1. Clone the repository
+
+2. Install Python dependencies
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+3. Set up environment variables
+Create a .env file in the project root:
+CDP_API_KEY_NAME=your_cdp_key_name
+CDP_API_KEY_PRIVATE_KEY=your_cdp_private_key
+CONTRACT_ADDRESS=0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789
+
+4. Start the server
+python app.py
+
+The server will start at http://localhost:5000
