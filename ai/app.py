@@ -241,25 +241,27 @@ def chat():
     message = data.get('message', '')
     
     try:
-        # Initialize a single response string
-        response = []
-        
+        response = ""
         for chunk in agent_executor.stream(
             {"messages": [HumanMessage(content=message)]},
             {"configurable": {"thread_id": "certificate_verification_agent"}}
         ):
-            # Only add non-empty, unique responses
-            if "agent" in chunk and chunk["agent"]["messages"][0].content.strip():
-                response.append(chunk["agent"]["messages"][0].content.strip())
-            elif "tools" in chunk and chunk["tools"]["messages"][0].content.strip():
-                response.append(chunk["tools"]["messages"][0].content.strip())
+            if "agent" in chunk:
+                response += chunk["agent"]["messages"][0].content
+            elif "tools" in chunk:
+                response += chunk["tools"]["messages"][0].content
 
-        # Return the last meaningful response
-        return jsonify({
-            'response': response[-1] if response else "I couldn't process that request."
-        })
+        return jsonify({'response': response})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        'status': 'healthy',
+        'message': 'Certificate verification service is running',
+        'contract': CONTRACT_ADDRESS
+    })
 
 if __name__ == '__main__':
     print("🎓 Certificate Verification Service")
