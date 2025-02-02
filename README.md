@@ -53,8 +53,8 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 3. Set up environment variables
-Create a .env file in the project root: < br / > 
-< br / >  CDP_API_KEY_NAME=your_cdp_key_name
+Create a .env file in the project root: 
+CDP_API_KEY_NAME=your_cdp_key_name
 CDP_API_KEY_PRIVATE_KEY=your_cdp_private_key
 CONTRACT_ADDRESS=0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789
 
