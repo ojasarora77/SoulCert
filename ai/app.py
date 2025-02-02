@@ -25,7 +25,7 @@ cdp = CdpAgentkitWrapper()
 cdp_toolkit = CdpToolkit.from_cdp_agentkit_wrapper(cdp)
 tools = cdp_toolkit.get_tools()
 
-CONTRACT_ADDRESS = "0x51aFC34058734d8a83ab286F9668114663Ba0541" #0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789
+CONTRACT_ADDRESS = "0xEC1436e5C911ae8a53066DF5E1CC79A9d8F8A789" 
 
 # Certificate verification functions
 def mint_certificate(student_address: str, ipfs_hash: str) -> str:
@@ -241,27 +241,25 @@ def chat():
     message = data.get('message', '')
     
     try:
-        response = ""
+        # Initialize a single response string
+        response = []
+        
         for chunk in agent_executor.stream(
             {"messages": [HumanMessage(content=message)]},
             {"configurable": {"thread_id": "certificate_verification_agent"}}
         ):
-            if "agent" in chunk:
-                response += chunk["agent"]["messages"][0].content
-            elif "tools" in chunk:
-                response += chunk["tools"]["messages"][0].content
+            # Only add non-empty, unique responses
+            if "agent" in chunk and chunk["agent"]["messages"][0].content.strip():
+                response.append(chunk["agent"]["messages"][0].content.strip())
+            elif "tools" in chunk and chunk["tools"]["messages"][0].content.strip():
+                response.append(chunk["tools"]["messages"][0].content.strip())
 
-        return jsonify({'response': response})
+        # Return the last meaningful response
+        return jsonify({
+            'response': response[-1] if response else "I couldn't process that request."
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({
-        'status': 'healthy',
-        'message': 'Certificate verification service is running',
-        'contract': CONTRACT_ADDRESS
-    })
 
 if __name__ == '__main__':
     print("🎓 Certificate Verification Service")
